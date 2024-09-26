@@ -66,12 +66,7 @@ function App(): JSX.Element {
   return (
     <SafeAreaView style={backgroundStyle}>
         <StatusBar translucent backgroundColor="#ff6275" />
-        <View style={{
-            backgroundColor: '#ff6275',
-            width: '100%',
-            height: 100
-            }}>
-        </View>
+        <TablePage></TablePage>
     </SafeAreaView>
   );
 }
