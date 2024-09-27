@@ -4,9 +4,50 @@ import globalSS from "../../style/global";
 
 const fontContext = createContext('');
 
+const timeData = [
+    {
+        date: '09-23',
+        weekday: '周一',
+    },
+    {
+        date: '09-24',
+        weekday: '周二',
+    },
+    {
+        date: '09-25',
+        weekday: '周三',
+    },
+    {
+        date: '09-26',
+        weekday: '周四',
+    },
+    {
+        date: '09-27',
+        weekday: '周五',
+    },
+    {
+        date: '09-28',
+        weekday: '周六',
+    },
+    {
+        date: '09-29',
+        weekday: '周日',
+    },
+];
+
 export default function TablePage(): JSX.Element {
     const theme = useColorScheme();
     const [fontColor, setFontColor] = useState('black');
+    const dateColumn = timeData.map((item) => {
+        return (
+          <View style={styleSheet.dateItem}>
+              <Text>{item.weekday}</Text>
+              <Text>{item.date}</Text>
+          </View>
+        );
+    })
+
+
     useEffect(() => {
         setFontColor(globalSS().fontColor);
     }, [theme]);
@@ -17,6 +58,8 @@ export default function TablePage(): JSX.Element {
                 style={{
                     width: '100%',
                     marginTop: 20,
+                    display: 'flex',
+                    flexDirection: 'column'
                 }}
                 refreshControl={
                     <RefreshControl refreshing={false} />
@@ -63,6 +106,13 @@ export default function TablePage(): JSX.Element {
                         }}
                     ></Image>
                 </View>
+                <View style={styleSheet.tableWrapper}>
+                    <View style={styleSheet.tableContainer}>
+                        <View style={styleSheet.dateContainer}>
+
+                        </View>
+                    </View>
+                </View>
             </ScrollView>
         </fontContext.Provider>
     );
@@ -96,5 +146,29 @@ const styleSheet = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+    },
+
+    tableWrapper: {
+        width: 50,
+        height: 50,
+        marginVertical: 10,
+        marginHorizontal: 20,
+        backgroundColor: 'black',
+    },
+
+    tableContainer: {
+        display: 'flex',
+        flexDirection: 'column'
+    },
+
+    dateContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
+
+    dateItem: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column'
     }
 })
