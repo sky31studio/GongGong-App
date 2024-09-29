@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.2.7",
     "react": "18.2.0",
     "react-devtools": "^5.3.1",
     "react-native": "0.72.17"
