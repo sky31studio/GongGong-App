@@ -2,6 +2,7 @@ import {Image, RefreshControl, ScrollView, StyleSheet, Text, useColorScheme, Vie
 import React, {createContext, useCallback, useEffect, useState} from "react";
 import globalSS from "../../style/global";
 import Schedule from "./schedule";
+import Table from "./table";
 
 const fontContext = createContext('');
 
@@ -39,6 +40,7 @@ const timeData = [
 export default function TablePage(): JSX.Element {
     const theme = useColorScheme();
     const [fontColor, setFontColor] = useState('black');
+
     const dateColumn = timeData.map((item) => {
         return (
           <View style={styleSheet.dateItem}>

@@ -1,21 +1,32 @@
 import React from "react";
 import {StyleSheet, Text, View} from "react-native";
+import { ClassObject } from "./table";
 
-export default function ClassBox({name = 'Class', location = 'Somewhere', color = '#1cb128'}): React.JSX.Element {
+interface ClassBoxProps {
+    color?: string,
+    course?: ClassObject,
+}
+
+const ClassBox: React.FC<ClassBoxProps> = ({ color = '#1cb128', course = {
+    classroom: 'somewhere',
+    name: 'class',
+}}) => {
 
 
     return (
       <View style={{...styleSheet.boxContainer, backgroundColor: color}}>
           <View style={styleSheet.classBoxTextWrapper}>
-              <Text style={styleSheet.classBoxText}>{name}</Text>
+              <Text style={styleSheet.classBoxText}>{course.name}</Text>
           </View>
           <View style={{...styleSheet.classBoxTextWrapper, position: 'absolute', bottom: 5}}>
-              <Text style={styleSheet.classBoxText}>{location}</Text>
+              <Text style={styleSheet.classBoxText}>{course.classroom}</Text>
           </View>
 
       </View>
     );
 }
+
+export default ClassBox;
 
 const styleSheet = StyleSheet.create({
     boxContainer: {
@@ -39,7 +50,7 @@ const styleSheet = StyleSheet.create({
         textAlignVertical: 'center',
         color: 'white',
         fontWeight: '600',
-        fontSize: 12,
+        fontSize: 10,
         lineHeight: 14,
     }
 })
