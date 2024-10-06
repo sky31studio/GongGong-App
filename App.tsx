@@ -26,6 +26,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import TablePage from "./src/components/timeTable/tablePage";
+import LoginPage from "./src/components/login/loginPage";
 
 const { height: screenHeight } = Dimensions.get('window');
 
@@ -39,7 +40,7 @@ function App(): JSX.Element {
   return (
     <SafeAreaView style={[backgroundStyle, styles.fullScreen]}>
         <StatusBar translucent backgroundColor="#ff6275" />
-        <TablePage></TablePage>
+        <LoginPage />
     </SafeAreaView>
   );
 }

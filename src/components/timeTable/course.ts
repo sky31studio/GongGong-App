@@ -72,4 +72,8 @@ export default class Course {
         return this.placeInfo.periodDuration;
     }
 
+    public getDay(): string {
+        return this.placeInfo.day;
+    }
+
 }

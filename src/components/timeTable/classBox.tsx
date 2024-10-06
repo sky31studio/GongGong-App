@@ -12,14 +12,15 @@ const ClassBox: React.FC<ClassBoxProps> = ({ color = '#1cb128', course = {
     name: 'class',
 }}) => {
 
+    const {name, classroom} = course;
 
     return (
       <View style={{...styleSheet.boxContainer, backgroundColor: color}}>
           <View style={styleSheet.classBoxTextWrapper}>
-              <Text style={styleSheet.classBoxText}>{course.name}</Text>
+              <Text style={styleSheet.classBoxText}>{name}</Text>
           </View>
           <View style={{...styleSheet.classBoxTextWrapper, position: 'absolute', bottom: 5}}>
-              <Text style={styleSheet.classBoxText}>{course.classroom}</Text>
+              <Text style={styleSheet.classBoxText}>{classroom}</Text>
           </View>
 
       </View>

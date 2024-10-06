@@ -150,7 +150,6 @@ const styleSheet = StyleSheet.create({
     tableWrapper: {
         width: '100%',
         flex: 1,
-        marginVertical: 10,
     },
 
     tableContainer: {

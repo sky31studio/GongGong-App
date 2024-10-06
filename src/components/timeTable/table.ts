@@ -9,8 +9,18 @@ export interface ClassObject {
     isEmpty: boolean;
 }
 
+enum WeekDays {
+    Monday = 1,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday,
+    Sunday,
+}
+
 type WeekdayMap = {
-    [key: number]: Course[];
+    [key: string]: Course[];
 }
 
 export default class Table {
@@ -18,16 +28,23 @@ export default class Table {
 
     constructor() {
         for(let i = 1; i <= 7; i++) {
-            this.table[i] = [];
+            this.table[WeekDays[i]] = [];
         }
     }
 
-    public initTable(weekday: number, courses: Course[]) {
+    public initTable(courses: Course[]) {
+        this.cleanTable();
         courses.forEach((course) => {
-            this.addClass(weekday, course);
+            this.addClass(course.getDay(), course);
         })
 
-        this.update(weekday);
+        this.updateAll();
+    }
+
+    private cleanTable() {
+        for(let i = 1; i <= 7; i++) {
+            this.table[WeekDays[i]] = [];
+        }
     }
 
     /**
@@ -39,10 +56,10 @@ export default class Table {
      * @param weekDay
      */
     getClassList(weekNumber: number, weekDay: number): ClassObject[] {
+        console.log(this.table);
         const list: ClassObject[] = [];
         let index = 1;
-
-        for(const course of this.table[weekDay]) {
+        for(const course of this.table[WeekDays[weekDay]]) {
             const start = course.getWeekStart();
             const end = course.getWeekEnd();
 
@@ -95,14 +112,24 @@ export default class Table {
         return count === 11;
     }
 
-    private addClass(weekday: number, course: Course) {
+    private addClass(weekday: string, course: Course) {
         this.table[weekday].push(course);
     }
 
-    private update(weekday: number) {
+    private updateAll() {
+        for(let i = 1; i <= 7; i++) {
+            this.update(WeekDays[i]);
+        }
+    }
+
+    private update(weekday: string) {
         this.table[weekday].sort((a, b) => {
             return a.getPeriodStart() - b.getPeriodStart();
         })
+    }
+
+    public getAllCourses() {
+        return Object.entries(this.table);
     }
 
     public addCustomArrangement() {

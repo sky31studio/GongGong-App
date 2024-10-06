@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {StyleSheet, Text, View} from "react-native";
 import ClassBox from "./classBox";
 import Table from "./table";
 import Course from "./course";
+import axios from "axios";
 
 const weekTime = ['01-01', '01-02', '01-03', '01-04', '01-05', '01-06', '01-07'];
 
@@ -199,6 +200,23 @@ const timeInterval = [
     },
 ]
 
+function dealTable(data: any[]): Course[] {
+    const courses: Course[] = [];
+
+    data.forEach((course, index) => {
+        const model = new Course(course.name, course.teacher, course.classroom, {
+            periodStart: course.start_time,
+            periodDuration: course.duration,
+            day: course.day,
+            weekInfo: convertToWeekInfo(course.weeks),
+        })
+
+        courses.push(model);
+    })
+
+    return courses;
+}
+
 function convertToWeekInfo(str: string): {weekStart:number, weekEnd:number}[] {
     const weekInterval = str.split(',');
     const res: {weekStart:number, weekEnd:number}[] = [];
@@ -211,29 +229,11 @@ function convertToWeekInfo(str: string): {weekStart:number, weekEnd:number}[] {
             weekEnd: parseInt(tmp[1])
         })
     })
-
     return res;
 }
 
 export default function Schedule(): React.JSX.Element {
-    const table = new Table();
-
-    for(let i = 0; i < 7; i++) {
-        const courses: Course[] = [];
-        for(let j = 0; j < classData[i].length; j++) {
-            const origin = classData[i][j];
-            const course = new Course(origin.name, origin.teacher, origin.classroom, {
-                periodStart: origin.periodStart,
-                periodDuration: origin.periodDuration,
-                weekInfo: convertToWeekInfo(origin.weeks),
-            })
-
-            courses.push(course);
-        }
-
-        table.initTable(i + 1, courses);
-    }
-
+    const [table, setTable] = useState(new Table());
     // 左侧时间表
     let timeListWithGap = timeInterval.reduce((acc: React.JSX.Element[], item, index) => {
         let ss;
@@ -270,92 +270,113 @@ export default function Schedule(): React.JSX.Element {
     );
     timeListWithGap = [monthItem,...timeListWithGap];
 
-    let classList = weekTime.map((item, index) => {
-        const weekdayItem = (
-          <View style={styleSheet.weekdayItemWrapper}>
-              <View style={styleSheet.weekdayItem}>
-                  <Text style={styleSheet.wItemBoldText}>{weekdayCNName[index]}</Text>
-                  <Text style={styleSheet.wItemSlimText}>{item}</Text>
-              </View>
-          </View>
-        );
+    const [courses, setCourses] = useState<[string, Course[]][]>(table.getAllCourses());
+    // TODO: 后续会修改url
+    const fetchData = async () => {
+        fetch('http://192.168.1.105:8000/courses')
+            .then(res => res.json())
+            .then(response => {
+                const tmp = dealTable(response);
+                table.initTable(tmp);
+                setCourses(table.getAllCourses());
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    }
 
-        const todayClassData = table.getClassList(2, index + 1);
+    useEffect(() => {
+        fetchData();
+    }, []);
 
-        let flag = 1;
-        const classItemList = todayClassData.reduce((acc: React.JSX.Element[], item, index) => {
-            const space = 4 - (flag - 1) % 4;
-            if(space <= item.period) {
-                const view = (
-                    <View style={{...styleSheet.classItem, flex: space}}>
-                        <View style={{width: '100%', height: '100%', padding: 3}}>
-                            {item.isEmpty ? <ClassBox color={'#ff000000'}></ClassBox> : <ClassBox course={item}></ClassBox>}
-                        </View>
+    const classList = () => {
+        return courses.map((item, index) => {
+            const weekdayItem = (
+                <View style={styleSheet.weekdayItemWrapper}>
+                    <View style={styleSheet.weekdayItem}>
+                        <Text style={styleSheet.wItemBoldText}>{weekdayCNName[index]}</Text>
+                        <Text style={styleSheet.wItemSlimText}>{weekTime[index]}</Text>
                     </View>
-                );
+                </View>
+            );
 
-                acc.push(view);
+            const todayClassData = table.getClassList(2, index + 1);
 
-                let remainPeriod = item.period - space;
-                while(remainPeriod >= 4) {
-                    const secView = (
-                        <View style={{...styleSheet.classItem, flex: 4}}>
+            let flag = 1;
+            const classItemList = todayClassData.reduce((acc: React.JSX.Element[], item, index) => {
+                const space = 4 - (flag - 1) % 4;
+                if(space <= item.period) {
+                    const view = (
+                        <View key={index} style={{...styleSheet.classItem, flex: space}}>
                             <View style={{width: '100%', height: '100%', padding: 3}}>
-                                {item.isEmpty ? <ClassBox color={'#ff000000'}></ClassBox> : <ClassBox course={item}></ClassBox>}
+                                {item.isEmpty ? <ClassBox color="#ff000000" /> : <ClassBox course={item} />}
                             </View>
                         </View>
                     );
 
-                    acc.push(<View style={styleSheet.classGap} />, secView);
-                    remainPeriod -= 4;
-                }
+                    acc.push(view);
 
-                if(remainPeriod !== 0) {
-                    const secView = (
-                        <View style={{...styleSheet.classItem, flex: remainPeriod}}>
-                            <View style={{width: '100%', height: '100%', padding: 3}}>
-                                {item.isEmpty ? <ClassBox color={'#ff000000'}></ClassBox> : <ClassBox course={item}></ClassBox>}
+                    let remainPeriod = item.period - space;
+                    while(remainPeriod >= 4) {
+                        const secView = (
+                            <View style={{...styleSheet.classItem, flex: 4}}>
+                                <View style={{width: '100%', height: '100%', padding: 3}}>
+                                    {item.isEmpty ? <ClassBox color="#ff000000" /> : <ClassBox course={item} />}
+                                </View>
                             </View>
-                        </View>
-                    );
+                        );
 
-                    acc.push(<View style={styleSheet.classGap} />, secView);
+                        acc.push(<View style={styleSheet.classGap} />, secView);
+                        remainPeriod -= 4;
+                    }
+
+                    if(remainPeriod !== 0) {
+                        const secView = (
+                            <View style={{...styleSheet.classItem, flex: remainPeriod}}>
+                                <View style={{width: '100%', height: '100%', padding: 3}}>
+                                    {item.isEmpty ? <ClassBox color="#ff000000" /> : <ClassBox course={item} />}
+                                </View>
+                            </View>
+                        );
+
+                        acc.push(<View style={styleSheet.classGap} />, secView);
+                    } else {
+                        acc.push(<View style={styleSheet.classGap} />);
+                    }
+
                 } else {
-                    acc.push(<View style={styleSheet.classGap} />);
+                    const view = (
+                        <View style={{...styleSheet.classItem, flex: item.period}}>
+                            <View style={{width: '100%', height: '100%', padding: 3}}>
+                                {item.isEmpty ? <ClassBox color="#ff000000" /> : <ClassBox course={item} />}
+                            </View>
+
+                        </View>
+                    );
+
+                    acc.push(view);
                 }
 
-            } else {
-                const view = (
-                    <View style={{...styleSheet.classItem, flex: item.period}}>
-                        <View style={{width: '100%', height: '100%', padding: 3}}>
-                            {item.isEmpty ? <ClassBox color={'#ff000000'}></ClassBox> : <ClassBox course={item}></ClassBox>}
-                        </View>
+                flag += item.period;
 
-                    </View>
-                );
+                return acc;
+            }, []);
 
-                acc.push(view);
-            }
-
-            flag += item.period;
-
-            return acc;
-        }, []);
-
-        return (
-            <View style={styleSheet.weekdayContainer}>
-                {weekdayItem}
-                {classItemList}
-            </View>
-        )
-    });
+            return (
+                <View key={index} style={styleSheet.weekdayContainer}>
+                    {weekdayItem}
+                    {classItemList}
+                </View>
+            )
+        });
+    }
 
     return (
         <View style={styleSheet.scheduleContainer}>
             <View style={styleSheet.timeContainer}>
                 {timeListWithGap}
             </View>
-            {classList}
+            {classList()}
         </View>
     );
 }
