@@ -27,6 +27,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import TablePage from "./src/components/timeTable/tablePage";
 import LoginPage from "./src/components/login/loginPage";
+import HomePage from "./src/components/home/homePage";
 
 const { height: screenHeight } = Dimensions.get('window');
 
@@ -40,7 +41,7 @@ function App(): JSX.Element {
   return (
     <SafeAreaView style={[backgroundStyle, styles.fullScreen]}>
         <StatusBar translucent backgroundColor="#ff6275" />
-        <LoginPage />
+        <HomePage />
     </SafeAreaView>
   );
 }

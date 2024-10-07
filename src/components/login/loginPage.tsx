@@ -1,5 +1,14 @@
-import React from "react";
-import {StyleSheet, TextInput, View} from "react-native";
+import React, {useEffect, useRef, useState} from "react";
+import {
+    Animated, Button,
+    Keyboard, Pressable,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableWithoutFeedback,
+    View
+} from "react-native";
 import {SvgXml} from "react-native-svg";
 
 
@@ -15,53 +24,75 @@ const svgXML = `
 </svg>
 
 `
+const hideSvgXML = `
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_25_16073)">
+<path d="M9.41329 9.41343C9.23019 9.60993 9.00939 9.76754 8.76406 9.87685C8.51873 9.98616 8.25389 10.0449 7.98535 10.0497C7.71681 10.0544 7.45007 10.005 7.20103 9.90443C6.952 9.80384 6.72577 9.65412 6.53586 9.4642C6.34594 9.27428 6.19622 9.04806 6.09563 8.79902C5.99504 8.54999 5.94564 8.28325 5.95038 8.0147C5.95512 7.74616 6.0139 7.48133 6.12321 7.236C6.23252 6.99067 6.39013 6.76986 6.58663 6.58677M11.96 11.9601C10.8204 12.8288 9.4327 13.31 7.99996 13.3334C3.33329 13.3334 0.666626 8.0001 0.666626 8.0001C1.49589 6.4547 2.64605 5.1045 4.03996 4.0401L11.96 11.9601ZM6.59996 2.82676C7.05885 2.71935 7.52867 2.66566 7.99996 2.66676C12.6666 2.66676 15.3333 8.0001 15.3333 8.0001C14.9286 8.75717 14.446 9.46992 13.8933 10.1268L6.59996 2.82676Z" stroke="#B7B7B7" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0.666626 0.666748L15.3333 15.3334" stroke="#B7B7B7" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_25_16073">
+<rect width="16" height="16" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+
+    `
+const showSvgXML = `
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_25_16099)">
+<path d="M0.666687 8.00008C0.666687 8.00008 3.33335 2.66675 8.00002 2.66675C12.6667 2.66675 15.3334 8.00008 15.3334 8.00008C15.3334 8.00008 12.6667 13.3334 8.00002 13.3334C3.33335 13.3334 0.666687 8.00008 0.666687 8.00008Z" stroke="#B7B7B7" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M8 10C9.10457 10 10 9.10457 10 8C10 6.89543 9.10457 6 8 6C6.89543 6 6 6.89543 6 8C6 9.10457 6.89543 10 8 10Z" stroke="#B7B7B7" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_25_16099">
+<rect width="16" height="16" fill="white"/>
+</clipPath>
+</defs>
+</svg>
+`
 
 export default function LoginPage(): React.JSX.Element {
 
     const inputSection = <InputSection />
+    const buttonSection = <ButtonSection />
+
+
+    const keyboardDismiss = () => {
+        Keyboard.dismiss();
+    }
+
+    useEffect(() => {
+        const handleFocus = () => {
+
+        }
+    }, []);
 
     return (
-        <View style={styleSheet.loginContainer}>
-            <View style={styleSheet.logoWrapper}>
-                <SvgXml xml={svgXML} width="100%" />
+        <TouchableWithoutFeedback onPress={keyboardDismiss}>
+            <View style={styleSheet.loginContainer}>
+                <View style={styleSheet.logoWrapper}>
+                    <SvgXml xml={svgXML} width="100%" />
+                </View>
+                <View style={styleSheet.inputWrapper}>
+                    {inputSection}
+                </View>
+                <View style={styleSheet.buttonWrapper}>
+                    {buttonSection}
+                </View>
             </View>
-            <View style={styleSheet.inputWrapper}>
-                {inputSection}
-            </View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 }
 
-const styleSheet = StyleSheet.create({
-    loginContainer: {
-        width: '100%',
-        height: '100%',
-        paddingTop: '30%',
-    },
-
-    logoWrapper: {
-        width: '100%',
-        paddingHorizontal: 'auto',
-    },
-
-    inputWrapper: {
-        paddingTop: '10%',
-        width: '100%',
-    }
-});
-
 function InputSection(): React.JSX.Element {
+    const idInput = <MyInput initText="请输入你的学号" />
+    const pwdInput = <MyInput initText="请输入教务系统密码" visibleProp={true} />
 
     return (
         <View style={inputStyleSheet.inputContainer}>
-            <View style={inputStyleSheet.inputBox}>
-                <View style={{backgroundColor: '#b3b3b3', height: '100%', width: 3, borderRadius: 5}}></View>
-                <TextInput style={inputStyleSheet.loginInput} />
-            </View>
-            <View style={inputStyleSheet.inputBox}>
-                <View style={{backgroundColor: '#b3b3b3', height: '100%', width: 3, borderRadius: 5}}></View>
-                <TextInput style={inputStyleSheet.loginInput} />
-            </View>
+            {idInput}
+            {pwdInput}
         </View>
     );
 }
@@ -80,13 +111,171 @@ const inputStyleSheet = StyleSheet.create({
         paddingVertical: 25,
         display: 'flex',
         flexDirection: 'row',
+        position: 'relative',
     },
 
     loginInput: {
         width: '100%',
         height: '100%',
         backgroundColor: 'rgba(0, 0, 0, 0)',
+        padding: 0,
         marginLeft: 10,
         flex: 1,
+        color: '#000',
+        fontSize: 15,
+        letterSpacing: 1,
+    },
+
+    hideSvgContainer: {
+        width: 16,
+        height: '100%',
+        right: 0,
+        justifyContent: 'center',
+    },
+})
+
+interface InputProps {
+    initText: string,
+    visibleProp?: boolean,
+}
+
+const MyInput: React.ComponentType<InputProps> = ({initText = 'text', visibleProp = false}) => {
+    const [text, setText] = useState('');
+    const [focused, setFocused] = useState(false);
+    const [visible, setVisible] = useState(!visibleProp);
+    const [changedColor] = useState(new Animated.Value(0));
+
+    const backgroundColor = changedColor.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['#b3b3b3', '#FF6275'],
+    })
+
+    const handleFocus = () => {
+        if(text === '') {
+            Animated.timing(changedColor, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: true,
+            }).start();
+        }
+
+        setFocused(true);
+    }
+
+    const handleBlur = () => {
+        if(text === '') {
+            Animated.timing(changedColor, {
+                toValue: 0,
+                duration: 300,
+                useNativeDriver: true,
+            }).start();
+            setFocused(false);
+        }
+    }
+
+    const handleChange = (value: string) => {
+        setText(value);
+    }
+
+    const shiftVisibility = () => {
+        setVisible(!visible);
+    }
+
+    const initTextView = (
+      <View style={{position: 'absolute', height: '100%', left: 13, top: 25}}>
+          <Text style={{color: '#b3b3b3', fontSize: 15}}>{initText}</Text>
+      </View>
+    );
+
+    return (
+        <View style={inputStyleSheet.inputBox}>
+            {!focused && initTextView}
+            <Animated.View
+                style={{
+                    backgroundColor: backgroundColor,
+                    height: '100%',
+                    width: 3,
+                    borderRadius: 5,
+                }}
+            ></Animated.View>
+            <TextInput secureTextEntry={!visible} onFocus={handleFocus} onBlur={handleBlur} onChangeText={handleChange} style={inputStyleSheet.loginInput} value={text} />
+            {visibleProp &&
+                <Pressable onPress={shiftVisibility}>
+                    <View style={inputStyleSheet.hideSvgContainer}>
+                        <SvgXml xml={visible ? showSvgXML : hideSvgXML} width="100%" />
+                    </View>
+                </Pressable>
+            }
+        </View>
+    );
+}
+
+const ButtonSection = () => {
+
+    return (
+        <View style={buttonStyleSheet.buttonContainer}>
+            <View style={{display: 'flex', flexDirection: 'row', marginVertical: 10}}>
+                <Text style={buttonStyleSheet.introText}>登录代表你已同意</Text>
+                <Text style={[buttonStyleSheet.introText, buttonStyleSheet.infoText]}>用户协议</Text>
+                <Text style={buttonStyleSheet.introText}>和</Text>
+                <Text style={[buttonStyleSheet.introText, buttonStyleSheet.infoText]}>隐私条款</Text>
+            </View>
+            <View style={buttonStyleSheet.loginButton}>
+                <Text style={{color: '#fff', fontWeight: '600', fontSize: 15}}>登录</Text>
+            </View>
+        </View>
+    )
+}
+
+const buttonStyleSheet = StyleSheet.create({
+    buttonContainer: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+
+    introText: {
+        letterSpacing: 1,
+        fontSize: 12,
+        color: '#b3b3b3',
+    },
+
+    infoText: {
+        color: '#8bb0f4'
+    },
+
+    loginButton: {
+        marginTop: 10,
+        width: '60%',
+        height: 45,
+        borderRadius: 25,
+        backgroundColor: '#FF6275',
+        alignItems: 'center',
+        justifyContent: 'center',
     }
 })
+
+const styleSheet = StyleSheet.create({
+    loginContainer: {
+        width: '100%',
+        height: '100%',
+        paddingTop: '30%',
+    },
+
+    logoWrapper: {
+        width: '100%',
+        paddingHorizontal: 'auto',
+    },
+
+    inputWrapper: {
+        paddingTop: '10%',
+        width: '100%',
+    },
+
+    buttonWrapper: {
+        paddingTop: '15%',
+        width: '100%',
+        position: 'relative',
+    },
+});
