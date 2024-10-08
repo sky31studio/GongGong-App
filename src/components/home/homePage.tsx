@@ -1,5 +1,7 @@
-import React, {useState} from "react";
-import {StyleSheet, Text, View} from "react-native";
+
+
+import React, {createContext, useContext, useEffect, useState} from "react";
+import {Animated, Pressable, StyleSheet, Text, Touchable, View} from "react-native";
 import {SvgXml} from "react-native-svg";
 
 
@@ -115,38 +117,98 @@ const FunctionBar = () => {
     );
 }
 
+interface HomeContextType {
+    choice: number;
+    shiftChoice: (value: number) => void;
+}
+
+const HomeContext = createContext<HomeContextType | undefined>(undefined);
+
 const MainBoard = () => {
-    const shiftButton = <ShiftButton />;
+    const classTableButton = <ShiftButton id={0} text='课程表' initFocus={true} />;
+    const countdownButton = <ShiftButton id={1} text='倒计时' />;
+
+    const [choice, setChoice] = useState(0);
+    const handleChoice = (value: number) => {
+        setChoice(value);
+    }
 
     return (
         <View style={styleSheet.mainBoardContainer}>
-            <View style={styleSheet.shiftButtonContainer}>
-                <View style={styleSheet.shiftButton}>
-                    {shiftButton}
+            <HomeContext.Provider value={{choice, shiftChoice: handleChoice}}>
+                <View style={styleSheet.shiftButtonContainer}>
+                    <View style={styleSheet.shiftButton}>
+                        {classTableButton}
+                    </View>
+                    <View style={{height: '100%', width: 2, borderRadius: 1, backgroundColor: '#D9D9D9'}}></View>
+                    <View style={styleSheet.shiftButton}>
+                        {countdownButton}
+                    </View>
                 </View>
-                <View style={{height: '100%', width: 2, borderRadius: 1, backgroundColor: '#D9D9D9'}}></View>
-                <View style={styleSheet.shiftButton}>
-
-                </View>
-            </View>
+            </HomeContext.Provider>
         </View>
     );
 }
 
-const ShiftButton = () => {
+interface ButtonProps {
+    text: string;
+    initFocus?: boolean;
+    id: number;
+}
+
+const ShiftButton: React.ComponentType<ButtonProps> = ({id, text = '', initFocus = false}): React.JSX.Element => {
+    // TODO: 不知道如何绕过该类型检查
+    const {choice, shiftChoice} = useContext(HomeContext);
 
     const [chunkWidth, setChunkWidth] = useState(0);
+    const [focused, setFocused] = useState(initFocus);
+    const [focusAnimate] = useState(new Animated.Value(focused ? 1 : 0));
+
+    const opacity = focusAnimate.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1]
+    });
+
+    const translateY = focusAnimate.interpolate({
+        inputRange: [0, 1],
+        outputRange: [10, 0],
+    })
+
+    // TODO: 并没有正确获取到Text的宽度
     const handleLayout = (event: any) => {
         const { width } = event.nativeEvent.layout;
         console.log(width);
         setChunkWidth(width);
     }
 
+    const handleClick = () => {
+        Animated.timing(focusAnimate, {
+            toValue: 1,
+            duration: 200,
+            useNativeDriver: true,
+        }).start();
+        shiftChoice(id);
+        setFocused(true);
+    }
+
+    useEffect(() => {
+        if(choice !== id) {
+            Animated.timing(focusAnimate, {
+                toValue: 0,
+                duration: 200,
+                useNativeDriver: true,
+            }).start();
+            setFocused(false);
+        }
+    }, [choice])
+
     return (
-        <View style={styleSheet.shiftBox}>
-            <Text onLayout={handleLayout} numberOfLines={1} style={styleSheet.shiftBoxText}>123</Text>
-            <View style={[styleSheet.initBox, {width: chunkWidth}]}></View>
-        </View>
+        <Pressable onPress={handleClick} >
+            <View style={styleSheet.shiftBox}>
+                <Text onLayout={handleLayout} numberOfLines={1} style={[styleSheet.shiftBoxText, {color: focused ? '#000' : '#999999'}]}>{text}</Text>
+                <Animated.View style={[styleSheet.initBox, {width: chunkWidth, opacity: opacity, transform: [{translateY: translateY}]}]}></Animated.View>
+            </View>
+        </Pressable>
     );
 }
 
@@ -214,6 +276,7 @@ const styleSheet = StyleSheet.create({
         width: '40%',
         height: '100%',
         paddingHorizontal: 15,
+        alignItems: 'center',
     },
 
     shiftBox: {
@@ -225,15 +288,18 @@ const styleSheet = StyleSheet.create({
 
     shiftBoxText: {
        padding: 0,
-        width: undefined,
+        width: 50,
         fontSize: 15,
-        color: '#000',
         textAlign: 'center',
+        zIndex: 10,
     },
     initBox: {
         width: undefined,
-        height: 3,
+        height: 5,
+        borderRadius: 3,
         backgroundColor: '#a0a',
+        position: 'absolute',
+        bottom: 3,
     }
 });
 
