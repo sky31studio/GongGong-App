@@ -1,10 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import {StyleSheet, Text, View} from "react-native";
 import {SvgXml} from "react-native-svg";
 
 
 const HomePage = () => {
     const functionBar = <FunctionBar />;
+    const marinBoard = <MainBoard />;
 
 
     return (
@@ -12,7 +13,9 @@ const HomePage = () => {
           <View style={{width: '100%', height: '18%'}}>
               {functionBar}
           </View>
-        <View></View>
+        <View style={styleSheet.mainBoardWrapper}>
+            {marinBoard}
+        </View>
       </View>
     );
 }
@@ -73,15 +76,15 @@ const classXML = `
 `;
 const emptyClassXML = `
 <svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_223_3004)">
+<g clip-path="url(#clip0_236_108)">
 <rect x="7" y="8.77783" width="30" height="28.2222" rx="5" stroke="white" stroke-width="2"/>
-<path d="M7.77783 17.5555H36.2223" stroke="white" stroke-width="2" stroke-linecap="round"/>
+<path d="M7.7778 17.5555H36.2222" stroke="white" stroke-width="2" stroke-linecap="round"/>
 <path d="M14.8889 6V8.66667" stroke="white" stroke-width="2" stroke-linecap="round"/>
 <path d="M29.1111 6V8.66667" stroke="white" stroke-width="2" stroke-linecap="round"/>
 <path d="M18.4445 25.6445L21.9461 29.1112L27.3333 23.7778" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </g>
 <defs>
-<clipPath id="clip0_223_3004">
+<clipPath id="clip0_236_108">
 <rect width="44" height="44" fill="white"/>
 </clipPath>
 </defs>
@@ -109,6 +112,41 @@ const FunctionBar = () => {
               <Text style={styleSheet.functionText}>多人空课</Text>
           </View>
       </View>
+    );
+}
+
+const MainBoard = () => {
+    const shiftButton = <ShiftButton />;
+
+    return (
+        <View style={styleSheet.mainBoardContainer}>
+            <View style={styleSheet.shiftButtonContainer}>
+                <View style={styleSheet.shiftButton}>
+                    {shiftButton}
+                </View>
+                <View style={{height: '100%', width: 2, borderRadius: 1, backgroundColor: '#D9D9D9'}}></View>
+                <View style={styleSheet.shiftButton}>
+
+                </View>
+            </View>
+        </View>
+    );
+}
+
+const ShiftButton = () => {
+
+    const [chunkWidth, setChunkWidth] = useState(0);
+    const handleLayout = (event: any) => {
+        const { width } = event.nativeEvent.layout;
+        console.log(width);
+        setChunkWidth(width);
+    }
+
+    return (
+        <View style={styleSheet.shiftBox}>
+            <Text onLayout={handleLayout} numberOfLines={1} style={styleSheet.shiftBoxText}>123</Text>
+            <View style={[styleSheet.initBox, {width: chunkWidth}]}></View>
+        </View>
     );
 }
 
@@ -146,6 +184,56 @@ const styleSheet = StyleSheet.create({
         lineHeight: 25,
         width: '100%',
         textAlign: 'center',
+    },
+
+    mainBoardWrapper: {
+       width: '100%',
+        paddingTop: 50,
+        flex: 1,
+    },
+
+    mainBoardContainer: {
+       width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    shiftButtonContainer: {
+       width: '60%',
+        height: 40,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent:'center',
+        alignItems: 'center',
+        paddingVertical: 8,
+    },
+
+    shiftButton: {
+        width: '40%',
+        height: '100%',
+        paddingHorizontal: 15,
+    },
+
+    shiftBox: {
+       position: 'relative',
+       height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+
+    shiftBoxText: {
+       padding: 0,
+        width: undefined,
+        fontSize: 15,
+        color: '#000',
+        textAlign: 'center',
+    },
+    initBox: {
+        width: undefined,
+        height: 3,
+        backgroundColor: '#a0a',
     }
 });
 
