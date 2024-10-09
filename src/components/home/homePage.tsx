@@ -3,6 +3,8 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {Animated, Pressable, StyleSheet, Text, Touchable, View} from "react-native";
 import {SvgXml} from "react-native-svg";
+import NotLoggedInComponent from "./notLoggedInComponent";
+import LinearGradient from "react-native-linear-gradient";
 
 
 const HomePage = () => {
@@ -146,6 +148,11 @@ const MainBoard = () => {
                     </View>
                 </View>
             </HomeContext.Provider>
+            <View style={styleSheet.mainWrapper}>
+                <View style={styleSheet.mainContainer}>
+                    <NotLoggedInComponent />
+                </View>
+            </View>
         </View>
     );
 }
@@ -206,7 +213,12 @@ const ShiftButton: React.ComponentType<ButtonProps> = ({id, text = '', initFocus
         <Pressable onPress={handleClick} >
             <View style={styleSheet.shiftBox}>
                 <Text onLayout={handleLayout} numberOfLines={1} style={[styleSheet.shiftBoxText, {color: focused ? '#000' : '#999999'}]}>{text}</Text>
-                <Animated.View style={[styleSheet.initBox, {width: chunkWidth, opacity: opacity, transform: [{translateY: translateY}]}]}></Animated.View>
+                <Animated.View style={[styleSheet.initBox, {width: chunkWidth, opacity: opacity, transform: [{translateY: translateY}]}]}>
+                    <LinearGradient
+                        colors={['#FF6275', '#FF9999']}
+                        style={{flex: 1, borderRadius: 3}}
+                    ></LinearGradient>
+                </Animated.View>
             </View>
         </Pressable>
     );
@@ -255,6 +267,7 @@ const styleSheet = StyleSheet.create({
     },
 
     mainBoardContainer: {
+       flex: 1,
        width: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -296,11 +309,23 @@ const styleSheet = StyleSheet.create({
     initBox: {
         width: undefined,
         height: 5,
-        borderRadius: 3,
-        backgroundColor: '#a0a',
         position: 'absolute',
         bottom: 3,
-    }
+    },
+    mainWrapper: {
+       width: '100%',
+        flex: 1,
+        paddingVertical: 40,
+        paddingHorizontal: 10,
+    },
+    mainContainer: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 30,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
 });
 
 export default HomePage;
