@@ -1,17 +1,13 @@
 import {TimePlace} from "../../models/timePlace";
 
-
-type CustomMap = {
-    [key: number]: TimePlace;
-}
-
+/**
+ * 课程类
+ */
 export default class Course {
     public name: string;
     public teacher: string;
     public classroom: string;
     public placeInfo: TimePlace;
-    innerCourses: Course[] = [];
-
 
     constructor(name: string, teacher: string, classroom: string, placeInfo: TimePlace) {
         this.name = name;
@@ -36,22 +32,31 @@ export default class Course {
         return res.slice(0, -1);
     }
 
+    /**
+     * 获取周次终止点的数组
+     */
     public getWeekEnd(): number[] {
         return this.placeInfo.weekInfo.map((item) => {
             return item.weekEnd;
         })
     }
-
+    /**
+     * 获取周次起始点的数组
+     */
     public getWeekStart(): number[] {
         return this.placeInfo.weekInfo.map((item) => {
             return item.weekStart;
         })
     }
-
+    /**
+     * 获取课程终止点的数组
+     */
     public getPeriodEnd() {
         return this.getPeriodStart() + this.placeInfo.periodDuration;
     }
-
+    /**
+     * 获取课程起始点的数组
+     */
     public getPeriodStart() {
         return this.placeInfo.periodStart;
     }

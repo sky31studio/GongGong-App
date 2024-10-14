@@ -5,7 +5,12 @@ const ClassComponent = () => {
 
     return (
         <View style={styleSheet.classContainer}>
-
+            <View style={styleSheet.statusContainer}>
+                <View style={styleSheet.circle}></View>
+            </View>
+            <View style={styleSheet.timelineContainer}>
+                
+            </View>
         </View>
     );
 }
@@ -20,10 +25,17 @@ const styleSheet = StyleSheet.create({
     },
 
     statusContainer: {
-
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
     },
 
     timelineContainer: {
+
+    },
+
+    circle: {
 
     }
 })

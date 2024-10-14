@@ -1,16 +1,20 @@
-
-
 import React, {createContext, useContext, useEffect, useState} from "react";
 import {Animated, Pressable, StyleSheet, Text, Touchable, View} from "react-native";
 import {SvgXml} from "react-native-svg";
 import NotLoggedInComponent from "./notLoggedInComponent";
 import LinearGradient from "react-native-linear-gradient";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
 
+interface NavigationProps {
+    navigation: {
+        navigate: (name: string, params?: object) => void;
+        goBack: () => void;
+    };
+}
 
-const HomePage = () => {
-    const functionBar = <FunctionBar />;
+const HomePage = ({ navigation }: NavigationProps) => {
+    const functionBar = <FunctionBar navigation={navigation} />;
     const marinBoard = <MainBoard />;
-
 
     return (
       <View style={styleSheet.homeContainer}>
@@ -96,7 +100,11 @@ const emptyClassXML = `
 
 `;
 
-const FunctionBar = () => {
+const FunctionBar: React.ComponentType<NavigationProps> = ({ navigation }) => {
+    const toTablePage = () => {
+        navigation.navigate("TablePage");
+    }
+
     return (
       <View style={styleSheet.functionBarContainer}>
         <View style={styleSheet.functionBox}>
@@ -107,10 +115,12 @@ const FunctionBar = () => {
               <SvgXml xml={gradeXML} width="100%" />
               <Text style={styleSheet.functionText}>查成绩</Text>
           </View>
-          <View style={styleSheet.functionBox}>
-              <SvgXml xml={classXML} width="100%" />
-              <Text style={styleSheet.functionText}>课程表</Text>
-          </View>
+          <Pressable onPress={toTablePage}>
+              <View style={styleSheet.functionBox}>
+                  <SvgXml xml={classXML} width="100%" />
+                  <Text style={styleSheet.functionText}>课程表</Text>
+              </View>
+          </Pressable>
           <View style={styleSheet.functionBox}>
               <SvgXml xml={emptyClassXML} width="100%" />
               <Text style={styleSheet.functionText}>多人空课</Text>
@@ -124,7 +134,10 @@ interface HomeContextType {
     shiftChoice: (value: number) => void;
 }
 
-const HomeContext = createContext<HomeContextType | undefined>(undefined);
+const HomeContext = createContext<HomeContextType>({
+    choice: 0,
+    shiftChoice: (value: number) => {}
+});
 
 const MainBoard = () => {
     const classTableButton = <ShiftButton id={0} text='课程表' initFocus={true} />;
@@ -134,6 +147,8 @@ const MainBoard = () => {
     const handleChoice = (value: number) => {
         setChoice(value);
     }
+
+    const HomeStack = createNativeStackNavigator();
 
     return (
         <View style={styleSheet.mainBoardContainer}>
@@ -150,7 +165,9 @@ const MainBoard = () => {
             </HomeContext.Provider>
             <View style={styleSheet.mainWrapper}>
                 <View style={styleSheet.mainContainer}>
-                    <NotLoggedInComponent />
+                    <HomeStack.Navigator initialRouteName="NotLoggedPage">
+                        <HomeStack.Screen name="NotLoggedPage" component={NotLoggedInComponent} />
+                    </HomeStack.Navigator>
                 </View>
             </View>
         </View>
@@ -164,8 +181,7 @@ interface ButtonProps {
 }
 
 const ShiftButton: React.ComponentType<ButtonProps> = ({id, text = '', initFocus = false}): React.JSX.Element => {
-    // TODO: 不知道如何绕过该类型检查
-    const {choice, shiftChoice} = useContext(HomeContext);
+    const {choice, shiftChoice}: HomeContextType = useContext(HomeContext);
 
     const [chunkWidth, setChunkWidth] = useState(0);
     const [focused, setFocused] = useState(initFocus);
