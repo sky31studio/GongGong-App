@@ -1,48 +1,33 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-    Dimensions,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    useColorScheme,
-    View,
-} from 'react-native';
+import {Dimensions, SafeAreaView, StatusBar, StyleSheet, useColorScheme,} from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors,} from 'react-native/Libraries/NewAppScreen';
 import TablePage from "./src/components/timeTable/tablePage";
-import LoginPage from "./src/components/login/loginPage";
 import HomePage from "./src/components/home/homePage";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import {NavigationContainer} from "@react-navigation/native";
 
 const { height: screenHeight } = Dimensions.get('window');
 
-function App(): JSX.Element {
+function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const Stack = createNativeStackNavigator();
+
   return (
-    <SafeAreaView style={[backgroundStyle, styles.fullScreen]}>
-        <StatusBar translucent backgroundColor="#ff6275" />
-        <HomePage />
-    </SafeAreaView>
+      <NavigationContainer>
+          <SafeAreaView style={[backgroundStyle, styles.fullScreen]}>
+              <StatusBar translucent backgroundColor="#ff6275" />
+              <Stack.Navigator initialRouteName="HomePage" screenOptions={{headerShown: false}}>
+                  <Stack.Screen name="HomePage" component={HomePage} />
+                  <Stack.Screen name="TablePage" component={TablePage} />
+              </Stack.Navigator>
+          </SafeAreaView>
+      </NavigationContainer>
   );
 }
 

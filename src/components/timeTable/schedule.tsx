@@ -3,203 +3,28 @@ import {StyleSheet, Text, View} from "react-native";
 import ClassBox from "./classBox";
 import Table from "./table";
 import Course from "./course";
-import axios from "axios";
+import TimeTableConfig from "../../config/TimeTableConfig";
+import Resources from "../../basic/Resources";
 
 const weekTime = ['01-01', '01-02', '01-03', '01-04', '01-05', '01-06', '01-07'];
 
 const weekdayCNName = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
-const weekdayENName = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-const classData = [
-    [
-        {
-            name: "网络安全协议分析",
-            teacher: "周维副教授",
-            classroom: "北山二阶梯",
-            weeks: "2-6,8-14",
-            periodStart: 3,
-            periodDuration: 2,
-        },
-        {
-            name: "算法设计与分析",
-            teacher: "李艳春副教授",
-            classroom: "计算中心B202",
-            weeks: "2-4,8-11",
-            periodStart: 5,
-            periodDuration: 2,
-        },
-        {
-            name: "马克思主义基本原理",
-            teacher: "宋婧讲师（高校）",
-            classroom: "逸夫楼-410",
-            weeks: "2-3,5-6,8-11",
-            periodStart: 7,
-            periodDuration: 2,
-        },
-    ],
-    [
-        {
-            name: "算法设计与分析",
-            teacher: "李艳春副教授",
-            classroom: "计算中心B202",
-            weeks: "2-5,7-10",
-            periodStart: 1,
-            periodDuration: 2,
-        },
-        {
-            name: "网络安全协议分析",
-            teacher: "周维副教授",
-            classroom: "北山二阶梯",
-            weeks: "2-5,7-14",
-            periodStart: 3,
-            periodDuration: 2,
-        },
-        {
-            name: "量子计算",
-            teacher: "李琴教授",
-            classroom: "兴教楼C203",
-            weeks: "2-5,7-10",
-            periodStart: 5,
-            periodDuration: 2,
-        },
-    ],
-    [
-        {
-            name: "区块链技术",
-            teacher: "姜新文,朱哲实验师",
-            classroom: "计算中心B301",
-            weeks: "2-5,7-8",
-            periodStart: 1,
-            periodDuration: 2,
-        },
-        {
-            name: "区块链技术",
-            teacher: "姜新文,朱哲实验师",
-            classroom: "计算中心B301",
-            weeks: "9-10",
-            periodStart: 1,
-            periodDuration: 2,
-        },
-        {
-            name: "云计算安全",
-            teacher: "余浩",
-            classroom: "兴教楼C203",
-            weeks: "11-16",
-            periodStart: 3,
-            periodDuration: 2,
-        },
-        {
-            name: "网络空间安全法律法规",
-            teacher: "易磊讲师（高校）",
-            classroom: "兴湘学院三教-103",
-            weeks: "2-5,7-10",
-            periodStart: 9,
-            periodDuration: 2,
-        },
-    ],
-    [
-        {
-            name: "Linux系统分析与安全",
-            teacher: "叶松涛副教授",
-            classroom: "兴教楼C204",
-            weeks: "2-5,7-10",
-            periodStart: 1,
-            periodDuration: 2,
-        },
-        {
-            name: "量子计算",
-            teacher: "李琴教授",
-            classroom: "兴教楼C203",
-            weeks: "2-5,7-10",
-            periodStart: 3,
-            periodDuration: 2,
-        },
-        {
-            name: "马克思主义基本原理",
-            teacher: "宋婧讲师（高校）",
-            classroom: "逸夫楼-410",
-            weeks: "2-3,5-6,8-11",
-            periodStart: 5,
-            periodDuration: 2,
-        },
-        {
-            name: "网络空间安全法律法规",
-            teacher: "易磊讲师（高校）",
-            classroom: "兴湘学院三教-103",
-            weeks: "2-5,7-10",
-            periodStart: 9,
-            periodDuration: 2,
-        },
-    ],
-    [
-        {
-            name: "区块链技术",
-            teacher: "姜新文,朱哲实验师",
-            classroom: "计算中心B301",
-            weeks: "2-5,7-8",
-            periodStart: 1,
-            periodDuration: 2,
-        },
-        {
-            name: "区块链技术",
-            teacher: "姜新文,朱哲实验师",
-            classroom: "计算中心B301",
-            weeks: "9-10",
-            periodStart: 1,
-            periodDuration: 2,
-        },
-    ],
-    [],
-    []
-]
+async function fetchData(dealRes: (response: any) => void) {
+    // TODO: 后续会修改url
+    fetch('http://192.168.1.105:8000/courses')
+        .then(res => res.json())
+        .then(dealRes)
+        .catch(error => {
+            console.log(error);
+        })
+}
 
-const timeInterval = [
-    {
-        "start": "08:00",
-        "end": "08:45"
-    },
-    {
-        "start": "08:55",
-        "end": "09:40"
-    },
-    {
-        "start": "10:10",
-        "end": "10:55"
-    },
-    {
-        "start": "11:05",
-        "end": "12:50"
-    },
-    {
-        "start": "14:30",
-        "end": "14:15"
-    },
-    {
-        "start": "14:25",
-        "end": "15:10"
-    },
-    {
-        "start": "15:40",
-        "end": "16:25"
-    },
-    {
-        "start": "16:35",
-        "end": "17:20"
-    },
-    {
-        "start": "19:30",
-        "end": "20:15"
-    },
-    {
-        "start": "20:25",
-        "end": "21:10"
-    },
-    {
-        "start": "21:20",
-        "end": "22:05"
-    },
-]
-
+/**
+ * 将接口返回的数据转换为Course对象数组
+ * @param data 接口数据
+ * @return Course[]
+ */
 function dealTable(data: any[]): Course[] {
     const courses: Course[] = [];
 
@@ -217,6 +42,10 @@ function dealTable(data: any[]): Course[] {
     return courses;
 }
 
+/**
+ * 转换表示周次区间的字符串为标记有起始和终止的数组
+ * @param str 表示周次区间的字符串
+ */
 function convertToWeekInfo(str: string): {weekStart:number, weekEnd:number}[] {
     const weekInterval = str.split(',');
     const res: {weekStart:number, weekEnd:number}[] = [];
@@ -234,6 +63,9 @@ function convertToWeekInfo(str: string): {weekStart:number, weekEnd:number}[] {
 
 export default function Schedule(): React.JSX.Element {
     const [table, setTable] = useState(new Table());
+
+    let timeInterval;
+    timeInterval = TimeTableConfig.getTimeInterval(new Date());
     // 左侧时间表
     let timeListWithGap = timeInterval.reduce((acc: React.JSX.Element[], item, index) => {
         let ss;
@@ -263,6 +95,7 @@ export default function Schedule(): React.JSX.Element {
         return acc;
     }, []);
 
+    // 左上角表示月份的单元格
     const monthItem = (
         <View style={styleSheet.monthItem}>
             <Text style={styleSheet.monthText}>1月</Text>
@@ -271,27 +104,21 @@ export default function Schedule(): React.JSX.Element {
     timeListWithGap = [monthItem,...timeListWithGap];
 
     const [courses, setCourses] = useState<[string, Course[]][]>(table.getAllCourses());
-    // TODO: 后续会修改url
-    const fetchData = async () => {
-        fetch('http://192.168.1.105:8000/courses')
-            .then(res => res.json())
-            .then(response => {
-                const tmp = dealTable(response);
-                table.initTable(tmp);
-                setCourses(table.getAllCourses());
-            })
-            .catch(error => {
-                console.log(error);
-            })
+    // 更新课程列表
+    let updateCourses: (response: any) => void;
+    updateCourses = (response: any) => {
+        const tmp = dealTable(response);
+        table.initTable(tmp);
+        setCourses(table.getAllCourses());
     }
 
     useEffect(() => {
-        fetchData();
+        Resources.fetchClassData(updateCourses);
     }, []);
 
     const classList = () => {
         return courses.map((item, index) => {
-            const weekdayItem = (
+            const weekDayItem = (
                 <View style={styleSheet.weekdayItemWrapper}>
                     <View style={styleSheet.weekdayItem}>
                         <Text style={styleSheet.wItemBoldText}>{weekdayCNName[index]}</Text>
@@ -309,7 +136,7 @@ export default function Schedule(): React.JSX.Element {
                     const view = (
                         <View key={index} style={{...styleSheet.classItem, flex: space}}>
                             <View style={{width: '100%', height: '100%', padding: 3}}>
-                                {item.isEmpty ? <ClassBox color="#ff000000" /> : <ClassBox course={item} />}
+                                {item.isEmpty ? '' : <ClassBox course={item} />}
                             </View>
                         </View>
                     );
@@ -321,7 +148,7 @@ export default function Schedule(): React.JSX.Element {
                         const secView = (
                             <View style={{...styleSheet.classItem, flex: 4}}>
                                 <View style={{width: '100%', height: '100%', padding: 3}}>
-                                    {item.isEmpty ? <ClassBox color="#ff000000" /> : <ClassBox course={item} />}
+                                    {item.isEmpty ? '' : <ClassBox course={item} />}
                                 </View>
                             </View>
                         );
@@ -334,7 +161,7 @@ export default function Schedule(): React.JSX.Element {
                         const secView = (
                             <View style={{...styleSheet.classItem, flex: remainPeriod}}>
                                 <View style={{width: '100%', height: '100%', padding: 3}}>
-                                    {item.isEmpty ? <ClassBox color="#ff000000" /> : <ClassBox course={item} />}
+                                    {item.isEmpty ? '' : <ClassBox course={item} />}
                                 </View>
                             </View>
                         );
@@ -348,7 +175,7 @@ export default function Schedule(): React.JSX.Element {
                     const view = (
                         <View style={{...styleSheet.classItem, flex: item.period}}>
                             <View style={{width: '100%', height: '100%', padding: 3}}>
-                                {item.isEmpty ? <ClassBox color="#ff000000" /> : <ClassBox course={item} />}
+                                {item.isEmpty ? '' : <ClassBox course={item} />}
                             </View>
 
                         </View>
@@ -364,7 +191,7 @@ export default function Schedule(): React.JSX.Element {
 
             return (
                 <View key={index} style={styleSheet.weekdayContainer}>
-                    {weekdayItem}
+                    {weekDayItem}
                     {classItemList}
                 </View>
             )

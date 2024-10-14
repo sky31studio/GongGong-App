@@ -1,14 +1,5 @@
-import React, {useEffect, useRef, useState} from "react";
-import {
-    Animated, Button,
-    Keyboard, Pressable,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableWithoutFeedback,
-    View
-} from "react-native";
+import React, {useEffect, useState} from "react";
+import {Animated, Keyboard, Pressable, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View} from "react-native";
 import {SvgXml} from "react-native-svg";
 
 
@@ -54,8 +45,8 @@ const showSvgXML = `
 
 export default function LoginPage(): React.JSX.Element {
 
-    const inputSection = <InputSection />
-    const buttonSection = <ButtonSection />
+    const inputSection = <InputSection/>
+    const buttonSection = <ButtonSection/>
 
 
     const keyboardDismiss = () => {
@@ -72,7 +63,7 @@ export default function LoginPage(): React.JSX.Element {
         <TouchableWithoutFeedback onPress={keyboardDismiss}>
             <View style={styleSheet.loginContainer}>
                 <View style={styleSheet.logoWrapper}>
-                    <SvgXml xml={svgXML} width="100%" />
+                    <SvgXml xml={svgXML} width="100%"/>
                 </View>
                 <View style={styleSheet.inputWrapper}>
                     {inputSection}
@@ -86,8 +77,8 @@ export default function LoginPage(): React.JSX.Element {
 }
 
 function InputSection(): React.JSX.Element {
-    const idInput = <MyInput initText="请输入你的学号" />
-    const pwdInput = <MyInput initText="请输入教务系统密码" visibleProp={true} />
+    const idInput = <MyInput initText="请输入你的学号"/>
+    const pwdInput = <MyInput initText="请输入教务系统密码" visibleProp={true}/>
 
     return (
         <View style={inputStyleSheet.inputContainer}>
@@ -151,7 +142,7 @@ const MyInput: React.ComponentType<InputProps> = ({initText = 'text', visiblePro
     })
 
     const handleFocus = () => {
-        if(text === '') {
+        if (text === '') {
             Animated.timing(changedColor, {
                 toValue: 1,
                 duration: 300,
@@ -163,7 +154,7 @@ const MyInput: React.ComponentType<InputProps> = ({initText = 'text', visiblePro
     }
 
     const handleBlur = () => {
-        if(text === '') {
+        if (text === '') {
             Animated.timing(changedColor, {
                 toValue: 0,
                 duration: 300,
@@ -182,9 +173,9 @@ const MyInput: React.ComponentType<InputProps> = ({initText = 'text', visiblePro
     }
 
     const initTextView = (
-      <View style={{position: 'absolute', height: '100%', left: 13, top: 25}}>
-          <Text style={{color: '#b3b3b3', fontSize: 15}}>{initText}</Text>
-      </View>
+        <View style={{position: 'absolute', height: '100%', left: 13, top: 25}}>
+            <Text style={{color: '#b3b3b3', fontSize: 15}}>{initText}</Text>
+        </View>
     );
 
     return (
@@ -198,11 +189,12 @@ const MyInput: React.ComponentType<InputProps> = ({initText = 'text', visiblePro
                     borderRadius: 5,
                 }}
             ></Animated.View>
-            <TextInput secureTextEntry={!visible} onFocus={handleFocus} onBlur={handleBlur} onChangeText={handleChange} style={inputStyleSheet.loginInput} value={text} />
+            <TextInput secureTextEntry={!visible} onFocus={handleFocus} onBlur={handleBlur} onChangeText={handleChange}
+                       style={inputStyleSheet.loginInput} value={text}/>
             {visibleProp &&
                 <Pressable onPress={shiftVisibility}>
                     <View style={inputStyleSheet.hideSvgContainer}>
-                        <SvgXml xml={visible ? showSvgXML : hideSvgXML} width="100%" />
+                        <SvgXml xml={visible ? showSvgXML : hideSvgXML} width="100%"/>
                     </View>
                 </Pressable>
             }

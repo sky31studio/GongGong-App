@@ -1,33 +1,31 @@
 import React from "react";
 import {StyleSheet, Text, View} from "react-native";
-import { ClassObject } from "./table";
+import {ClassObject} from "./table";
 
 interface ClassBoxProps {
     color?: string,
-    course?: ClassObject,
+    course: ClassObject,
 }
-
-const ClassBox: React.FC<ClassBoxProps> = ({ color = '#1cb128', course = {
-    classroom: 'somewhere',
-    name: 'class',
-}}) => {
-
+/**
+ * Schedule组件中的课程单元格
+ * @param color 课程单元格的背景颜色
+ * @param course 课程信息来源
+ */
+let ClassBox: React.ComponentType<ClassBoxProps>;
+ClassBox = ({course, color = '#1cb128'}) => {
     const {name, classroom} = course;
 
     return (
-      <View style={{...styleSheet.boxContainer, backgroundColor: color}}>
-          <View style={styleSheet.classBoxTextWrapper}>
-              <Text style={styleSheet.classBoxText}>{name}</Text>
-          </View>
-          <View style={{...styleSheet.classBoxTextWrapper, position: 'absolute', bottom: 5}}>
-              <Text style={styleSheet.classBoxText}>{classroom}</Text>
-          </View>
-
-      </View>
+        <View style={{...styleSheet.boxContainer, backgroundColor: color}}>
+            <View style={styleSheet.classBoxTextWrapper}>
+                <Text style={styleSheet.classBoxText}>{name}</Text>
+            </View>
+            <View style={{...styleSheet.classBoxTextWrapper, position: 'absolute', bottom: 5}}>
+                <Text style={styleSheet.classBoxText}>{classroom}</Text>
+            </View>
+        </View>
     );
-}
-
-export default ClassBox;
+};
 
 const styleSheet = StyleSheet.create({
     boxContainer: {
@@ -54,4 +52,6 @@ const styleSheet = StyleSheet.create({
         fontSize: 10,
         lineHeight: 14,
     }
-})
+});
+
+export default ClassBox;
